@@ -1,0 +1,115 @@
+{% extends 'frontends/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block contents %}
+<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+    style="background-image: url({% static 'fronts/images/bg-02.jpg' %});">
+    <h2 class="ltext-105 cl0 txt-center">
+        {{category}} Overview
+    </h2>
+</section>
+<br>
+<br>
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <div class="row isotope-grid">
+			{% for productObj in products %}
+			{% if productObj.is_sale %}
+			<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
+				<!-- Block2 -->
+				<div class="block2">
+					<div class="block2-pic hov-img0">
+						<div class="badge bg-light text-black position-absolute  block2-btn flex-c-m stext-103 cl2 size-102 trans-04 bg0 bor2 hov-btn1 p-lr-15 "
+							style="top:0.5rem; right:0.5rem; color: red;">
+							Sale
+						</div>
+						<img src="{{productObj.image.url}}" alt="{{productObj.name}}">
+
+						<a href="{% url 'home.product_details' productObj.id %}"
+							class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 quick-view">
+							Quick View
+						</a>
+					</div>
+					<div class="block2-txt flex-w flex-t p-t-14">
+						<div class="block2-txt-child1 flex-col-l ">
+							<p class="flex-c-m stext-101 cl5 size-100">
+								{{productObj.name}}
+							</p>
+						</div>
+
+						<div class="block2-txt-child2 flex-r p-t-3">
+						</div>
+						<div class="flex-w flex-sb-m p-b-17">
+							<span class="block2-txt-child1 flex-col-l">
+								{% with total_stars=5 %}
+
+								{% for star in total_stars|make_list %}
+								{% if forloop.counter <= productObj.average_rating %} <p class="btn btn-success">
+									{{ productObj.average_rating }} ★
+									</p>
+									{% endif %}
+									{% endfor %}
+								{% endwith %}
+							</span>
+
+						</div>
+						<span class="flex-c-m stext-101 cl5 size-100 m-2">
+							<strike>&#8360; {{productObj.price}}</strike>
+							&nbsp;
+							&#8360; {{productObj.get_discount_price}}
+						</span>
+					</div>
+				</div>
+			</div>
+			{% else %}
+			<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
+				<!-- Block2 -->
+				<div class="block2">
+					<div class="block2-pic hov-img0">
+						<img src="{{productObj.image.url}}" alt="{{productObj.name}}">
+
+						<a href="{% url 'home.product_details' productObj.id %}"
+							class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 quick-view">
+							Quick View
+						</a>
+					</div>
+					<div class="block2-txt flex-w flex-t p-t-14">
+						<div class="block2-txt-child1 flex-col-l">
+							<p class="flex-c-m stext-101 cl5 size-100">
+								{{productObj.name}}
+							</p>
+						</div>
+						<div class="flex-w flex-sb-m p-b-17">
+							<div class="flex-w flex-sb-m p-b-17">
+								<span class="block2-txt-child1 flex-col-l">
+									{% with total_stars=5 %}
+									{% for star in total_stars|make_list %}
+									{% if forloop.counter <= productObj.average_rating %} <p class="btn btn-success">
+										{{ productObj.average_rating }} ★
+										</p>
+										{% endif %}
+										{% endfor %}
+										{% endwith %}
+								</span>
+								<span class="flex-c-m stext-101 cl5 size-100 m-2">
+									&#8360; {{productObj.price}}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+		</div>
+
+        <!-- Load more -->
+        <div class="flex-c-m flex-w w-full p-t-45">
+            <a href="{% url 'home.products_item' %}"
+                class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+                Load More
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">View {{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Stexo</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'customer.index' %}">{{singular_name}}
+                                Managements</a>
+                        </li>
+                        <li class="breadcrumb-item active">View {{singular_name}}</li>
+                    </ol>
+                </div>
+            </div> <!-- end row -->
+        </div>
+        <!-- end page-title -->
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="tab-pane active" id="kt_apps_contacts_view_tab_1" role="tabpanel">
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Staff Role ID :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{customer_data.user_role_id}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Username :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{customer_data.username}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Name :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{customer_data.first_name}} {{customer_data.last_name}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Email :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{customer_data.email}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Profile Image :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {% if customer_data.image %}
+                                        <img src="{{customer_data.image.url}}" alt=""
+                                            class="thumb-md rounded-circle mr-2">
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Status :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {% if customer_data.is_active == True %}
+                                        <span class="label label-lg label-light-success label-inline">Yes</span>
+                                        {% else %}
+                                        <span class="label label-lg label-light-danger label-inline">No</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Created Date :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{customer_data.created_at}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Updated Date :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{customer_data.updated_at}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+    </div>
+    <!-- container-fluid -->
+
+</div>
+{% endblock content %}

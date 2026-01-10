@@ -1,0 +1,324 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">{{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Stexo</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'customer.index' %}">{{singular_name}}</a></li>
+                        <li class="breadcrumb-item active">All {{plural_name}}</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <!-- <div class="d-flex align-items-center">
+                                <a href="{% url 'staff.add' %}" class="btn btn-outline-primary btn-lg rounded-pill m-2"
+                                    title="Add {{singular_name}}">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+
+                            </div> -->
+
+                            <div class="d-flex align-items-center">
+                                <div class="input-group input-group-sm">
+                                    <input id="global-search" type="text" class="form-control"
+                                        placeholder="Search username, name, email...">
+                                    <div class="input-group-append">
+                                        <button id="toggle-filters" class="btn btn-outline-secondary"
+                                            title="Show filters">
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <select id="status-filter" class="form-control form-control-sm mr-2">
+                                    <option value="">All status</option>
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+
+                                <button id="clear-all-filters" class="btn btn-sm btn-outline-secondary">Clear</button>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible per-column filters -->
+                        <div id="filter-row" class="mb-3" style="display:none;">
+                            <div class="row">
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="0" class="form-control form-control-sm col-filter"
+                                        placeholder="Username">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="1" class="form-control form-control-sm col-filter"
+                                        placeholder="Name">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="2" class="form-control form-control-sm col-filter"
+                                        placeholder="Email">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="4" class="form-control form-control-sm col-filter"
+                                        placeholder="Contact">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-alternate" id="users-table">
+                                <thead class="thead-light ">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Contact</th>
+                                        <th>Location</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if page_obj %}
+                                    {% for user in page_obj %}
+                                    <tr>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                {% if user.image %}
+                                                <img src="{{ user.image.url }}" class="rounded-circle mr-2 avatar-sm"
+                                                    alt="">
+                                                {% else %}
+                                                <img src="{% static 'images/placeholder-avatar.png' %}"
+                                                    class="rounded-circle mr-2 avatar-sm" alt="">
+                                                {% endif %}
+                                                <div>
+                                                    <div class="font-weight-bold">{{ user.username }}</div>
+                                                    <small class="text-muted">{{ user.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">{{ user.first_name }} {{ user.last_name }}</td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ user.email }}</td>
+                                        <td class="align-middle">
+                                            {% if user.is_active %}
+                                            <span class="badge badge-success">Active</span>
+                                            {% else %}
+                                            <span class="badge badge-secondary">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="align-middle">{{ user.mobile_number }}</td>
+                                        <td class="align-middle d-none d-lg-table-cell">Houston, TX 77074</td>
+                                        <td class="align-middle">{{ user.created_at|date:"Y-m-d" }}</td>
+                                        <td class="align-middle text-right">
+                                            <div class="btn-group" role="group" aria-label="Actions">
+                                                <a href="{% url 'customer.view' user.id %}"
+                                                    class="btn btn-outline-primary btn-sm rounded-pill m-1"
+                                                    title="View"><i class="fa fa-eye"></i></a>
+                                                <a href="{% url 'customer.edit' user.id %}"
+                                                    class="btn btn-outline-primary btn-sm rounded-pill m-1"
+                                                    title="Edit"><i class="fa fa-edit"></i></a>
+                                                <a href="{% url 'customer.delete' user.id %}"
+                                                    class="btn btn-outline-danger btn-sm rounded-pill m-1 confirmDelete"
+                                                    title="Delete"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr class="no-records">
+                                        <td colspan="8" class="text-center">Record not found.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% include "pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".confirmDelete").click(function (e) {
+            e.stopImmediatePropagation();
+            url = $(this).attr('href');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Want to delete this ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "No, cancel",
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.replace(url);
+                }
+            });
+            e.preventDefault();
+        });
+        // Intercept form submits for elements with class .confirmDelete
+        $(document).on('submit', '.confirmDelete', function (e) {
+            e.preventDefault();
+            const form = this;
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This action will delete the record.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "No, cancel",
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+<!-- ...existing code... -->
+<style>
+    /* compact modern table */
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+    }
+
+    .table-alternate tbody tr:nth-child(odd) {
+        background: #fbfbfb;
+    }
+
+    .sticky-top thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #fff;
+    }
+
+    @media (max-width: 767px) {
+
+        /* convert rows into card-like blocks on small screens */
+        #users-table,
+        #users-table thead {
+            display: block;
+        }
+
+        #users-table tbody tr {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+            padding: 10px;
+        }
+
+        #users-table tbody td {
+            display: block;
+            width: 100%;
+        }
+
+        .text-right {
+            text-align: left !important;
+            margin-top: 8px;
+        }
+
+        .d-none.d-md-table-cell,
+        .d-none.d-lg-table-cell {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    // debounce helper
+    function debounce(fn, ms) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
+
+    (function () {
+        const table = document.getElementById('users-table');
+        const tbody = table.querySelector('tbody');
+        const rows = () => Array.from(tbody.querySelectorAll('tr')).filter(r => !r.classList.contains('no-records'));
+        const globalSearch = document.getElementById('global-search');
+        const statusFilter = document.getElementById('status-filter');
+        const colFilters = Array.from(document.querySelectorAll('.col-filter'));
+        const toggleFiltersBtn = document.getElementById('toggle-filters');
+        const filterRow = document.getElementById('filter-row');
+        const clearAllBtn = document.getElementById('clear-all-filters');
+
+        function normalize(s) { return (s || '').toString().trim().toLowerCase(); }
+
+        function applyFilters() {
+            const global = normalize(globalSearch.value);
+            const status = normalize(statusFilter.value);
+            const cols = colFilters.map(f => ({ col: parseInt(f.dataset.col, 10), val: normalize(f.value) }));
+
+            let visible = 0;
+            rows().forEach(r => {
+                const cells = r.querySelectorAll('td');
+                let ok = true;
+
+                // global search across several columns
+                if (global) {
+                    const combined = [cells[0]?.textContent, cells[1]?.textContent, cells[2]?.textContent].join(' ').toLowerCase();
+                    if (!combined.includes(global)) ok = false;
+                }
+
+                // status filter (true/false)
+                if (ok && status) {
+                    const text = normalize(cells[3]?.textContent);
+                    if (status === 'true' && !text.includes('active')) ok = false;
+                    if (status === 'false' && !text.includes('inactive')) ok = false;
+                }
+
+                // per-column filters
+                if (ok) {
+                    for (const f of cols) {
+                        if (!f.val) continue;
+                        const cell = cells[f.col];
+                        if (!cell || !normalize(cell.textContent).includes(f.val)) { ok = false; break; }
+                    }
+                }
+
+                r.style.display = ok ? '' : 'none';
+                if (ok) visible++;
+            });
+
+            const noRecord = tbody.querySelector('.no-records');
+            if (noRecord) noRecord.style.display = visible ? 'none' : '';
+        }
+
+        const debouncedApply = debounce(applyFilters, 200);
+
+        // events
+        globalSearch.addEventListener('input', debouncedApply);
+        statusFilter.addEventListener('change', debouncedApply);
+        colFilters.forEach(f => { f.addEventListener('input', debouncedApply); });
+
+        toggleFiltersBtn.addEventListener('click', () => { filterRow.style.display = filterRow.style.display === 'none' ? '' : 'none'; });
+
+        clearAllBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            globalSearch.value = '';
+            statusFilter.selectedIndex = 0;
+            colFilters.forEach(f => f.value = '');
+            applyFilters();
+        });
+
+        // initial apply to ensure correct no-records visibility
+        applyFilters();
+    })();
+</script>
+{% endblock content %}

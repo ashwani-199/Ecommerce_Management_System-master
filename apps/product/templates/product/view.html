@@ -1,0 +1,136 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">View {{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Stexo</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'product.index' %}">{{singular_name}}
+                                Managements</a>
+                        </li>
+                        <li class="breadcrumb-item active">View {{singular_name}}</li>
+                    </ol>
+                </div>
+            </div> <!-- end row -->
+        </div>
+        <!-- end page-title -->
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="tab-pane active" id="kt_apps_contacts_view_tab_1" role="tabpanel">
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Username :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{product_data.user.username}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Product Name :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.name}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Email :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.user.email}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Category :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.categories}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Brand Name :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.brand_name}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Description :</label>
+                                <div class="col-8">
+                                    <span
+                                        class="form-control-plaintext font-weight-bolder">{{product_data.description}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Product Image :</label>
+                                <div class="col-8">
+                                    {% for img in product_image %}
+                                    <div class="form-group">
+                                        <div class="col-12">
+                                            {% if img.image %}
+                                            <img src="{{img.image.url}}" width="200" height="200"
+                                                style="max-width: 100%;" alt="Italian Trulli">
+
+
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Stock :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {% if product_data.stock == True %}
+                                        <span class="label label-lg label-light-success label-inline">Yes</span>
+                                        {% else %}
+                                        <span class="label label-lg label-light-danger label-inline">No</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Created Date :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.created_at | date:'d-M-Y'}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Updated Date :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{product_data.updated_at | date:'d-M-Y h:m a'}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+    </div>
+    <!-- container-fluid -->
+
+</div>
+{% endblock content %}

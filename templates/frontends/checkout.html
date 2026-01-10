@@ -1,0 +1,63 @@
+{% extends 'frontends/base.html' %}
+{% load static %}
+{% block title %}Shopping Cart{% endblock %}
+{% block contents %}
+<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+    style="background-image: url({% static 'fronts/images/bg-01.jpg' %});">
+    <h2 class="ltext-105 cl0 txt-center">
+        Place Order
+    </h2>
+</section>
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'home.index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            Home
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            Place Order
+        </span>
+    </div>
+</div>
+<!-- Content page -->
+<section class="bg0 p-t-104 p-b-116">
+    <div class="container">
+        <div class="flex-w flex-tr">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Your Order Details
+                </h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    {% if field.name == 'shipping_address' %}
+                    <div class="bor8 m-b-20 how-pos4-parent">
+                        {{field}}
+                    </div>
+                    {% if field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{field.errors}}</strong>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    <h5 class="mtext-105 cl2 txt-center p-b-30">
+                        Cart Items
+                    </h5>
+                    {% for item in cart_items %}
+                    <div class="txt-center">{{ item.product.name }} x {{ item.quantity }}</div>
+                    {% endfor %}
+                    <br>
+                    <br>
+                    <button type="submit"
+                        class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                        Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

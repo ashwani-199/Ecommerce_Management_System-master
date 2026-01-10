@@ -1,0 +1,45 @@
+{% extends 'frontends/base.html' %}
+{% load static %}
+{% block title %}Shopping Cart{% endblock %}
+{% block contents %}
+<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+    style="background-image: url({% static 'fronts/images/bg-01.jpg' %});">
+    <h2 class="ltext-105 cl0 txt-center">
+        Order Confirmation
+    </h2>
+</section>
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{% url 'home.index' %}" class="stext-109 cl8 hov-cl1 trans-04">
+            Home
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            Order Confirmation
+        </span>
+    </div>
+</div>
+<!-- Content page -->
+<section class="bg0 p-t-104 p-b-116">
+    <div class="container">
+        <div class="flex-w flex-tr">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Your Order Confirmation Details
+                </h4>
+
+                <h5 class="mtext-105 cl2 txt-center p-b-30">Order ID : #{{ order.id }}</h5>
+                <p>Status : {{ order.status }}</p>
+                <p>Total Price : Rs {{ order.total_amount }}</p>
+                <h5 class="mtext-105 cl2 txt-center p-b-30">Items :</h5>
+                {% for item in order_items %}
+                <div>{{ item.product.name }} x {{ item.quantity }} = Rs {{ item.total_price }}</div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

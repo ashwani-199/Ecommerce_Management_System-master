@@ -1,0 +1,114 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% block content %}
+<div class="wrapper-page">
+    <div class="card card-pages shadow-none">
+
+        <div class="card-body">
+            <div class="text-center m-t-0 m-b-15">
+                <img src="{% static 'assets/images/logo-dark.png' %}" alt="" height="24">
+            </div>
+            <h5 class="font-18 text-center">Register</h5>
+
+            <form class="form-horizontal m-t-30" action="{% url 'register' %}" method="post" id="kt_login_singin_form">
+
+                {% csrf_token %}
+                {% for field in form %}
+                {% if field.name == 'username' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% elif field.name == 'first_name' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% elif field.name == 'last_name' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% elif field.name == 'email' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% elif field.name == 'password' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% elif field.name == 'confirm_password' %}
+                <div class="form-group">
+                    <div class="col-12">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="col-12">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label font-weight-normal" for="customCheck1">I accept <a
+                                    href="#" class="text-primary">Terms and Conditions</a></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center m-t-20">
+                    <div class="col-12">
+                        <button class="btn btn-primary btn-block btn-lg waves-effect waves-light"
+                            type="submit">Register</button>
+                    </div>
+                </div>
+
+                <div class="form-group mb-0 row">
+                    <div class="col-12 m-t-10 text-center">
+                        <a href="{% url 'login' %}" class="text-muted">Already have account?</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        $("#kt_login_submit").click(function (e) {
+            $("#kt_login_singin_form").submit();
+        });
+    });
+</script>
+{% endblock content %}

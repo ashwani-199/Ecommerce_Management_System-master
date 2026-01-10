@@ -1,0 +1,115 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">{{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Stexo</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'orders.index' %}">{{plural_name}}</a></li>
+                        <li class="breadcrumb-item active">All {{plural_name}}</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <!-- <a href="#">
+                            <h4 class="btn btn-primary mt-0 header-title mb-4">Add {{singular_name}}</h4>
+                        </a> -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Customer Name</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Shipping Address</th>
+                                        <th scope="col">Order Date</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Created Date</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if page_obj %}
+                                    {% for product in page_obj %}
+
+                                    <tr>
+                                        <td>{{product.customer}}</td>
+                                        <td>{{product.total_amount}}</td>
+                                        <td>{{product.shipping_address}}</td>
+                                        <td>{{product.order_date | date:'d-M-Y' }}</td>
+                                        {% if product.status == 'Pending' %}
+                                        <td><span class="badge badge-info">{{product.status}}</span></td>
+                                        {% elif product.status == 'Order Confirmed' %}
+                                        <td><span class="badge badge-success">{{product.status}}</span></td>
+                                        {% else %}
+                                        <td><span class="badge badge-warning">{{product.status}}</span></td>
+                                        {% endif %}
+                                        <td>{{product.created_at | date:'d-M-Y' }}</td>
+
+                                        <td>
+                                            <span>
+                                                <a href="{% url 'orders.edit' product.id %}" class="btn btn-primary btn-sm">Edit
+                                                </a>
+                                            </span>
+                                            <span>
+                                                <a href="#" class="btn btn-success btn-sm">View
+                                                </a>
+                                            </span>
+                                            <span>
+                                                <a href="#" class="btn btn-danger btn-sm confirmDelete">Delete
+                                                </a>
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;"> Record not found.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% include "pagination.html" %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".confirmDelete").click(function (e) {
+            e.stopImmediatePropagation();
+            url = $(this).attr('href');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Want to delete this ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "No, cancel",
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.replace(url);
+                }
+            });
+            e.preventDefault();
+        });
+    });
+
+</script>
+{% endblock content %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>Stexo - Responsive Admin & Dashboard Template | Themesdesign</title>
+    <meta content="Responsive admin theme build on top of Bootstrap 4" name="description" />
+    <meta content="Themesdesign" name="author" />
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/metismenu.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div class="accountbg"></div>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == "error" %}
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+
+            show_message("{{ message }}", 'error');
+        });
+    </script>
+    {% else %}
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+
+            show_message("{{ message }}", 'success');
+        });
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% block content %}
+    {% endblock content %}
+    <!-- END wrapper -->
+
+    <!-- jQuery  -->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/metismenu.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/js/waves.min.js' %}"></script>
+
+    <!-- App js -->
+    <script src="assets/js/app.js"></script>
+
+</body>
+
+</html>

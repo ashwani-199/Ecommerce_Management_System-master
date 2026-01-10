@@ -1,0 +1,200 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ title|default:"Edit Customer" }}</h5>
+                <a href="{% url 'customer.index' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'staff.edit' user_data.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.username.id_for_label }}">Username *</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                </div>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                            <small class="text-danger">{{ form.username.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.email.id_for_label }}">Email *</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                </div>
+                                {{ form.email }}
+                            </div>
+                            {% if form.email.errors %}
+                            <small class="text-danger">{{ form.email.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-id-badge"></i></span>
+                                </div>
+                                {{ form.first_name }}
+                            </div>
+                            {% if form.first_name.errors %}
+                            <small class="text-danger">{{ form.first_name.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}">Last name *</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-id-card"></i></span>
+                                </div>
+                                {{ form.last_name }}
+                            </div>
+                            {% if form.last_name.errors %}
+                            <small class="text-danger">{{ form.last_name.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.mobile_number.id_for_label }}">Contact *</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                </div>
+                                {{ form.mobile_number }}
+                            </div>
+                            {% if form.mobile_number.errors %}
+                            <small class="text-danger">{{ form.mobile_number.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="{{ form.is_active.id_for_label }}" class="d-block">Status</label>
+                            <div class="form-check form-switch">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active
+                                </label>
+                            </div>
+                            {% if form.is_active.errors %}
+                            <small class="text-danger">{{ form.is_active.errors.as_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="{{ form.image.id_for_label }}" class="d-block">Profile Image</label>
+
+                        <div class="form-check form-switch">
+                            {{ form.image }}
+                        </div>
+                        <br>
+                        <div class="mb-2">
+                            <div id="image-preview" class="image-box">
+                                {% if user_data.image %}
+                                <img id="preview-img" src="{{ user_data.image.url }}" alt="Profile image"
+                                    data-original="{{ user_data.image.url }}">
+                                {% else %}
+                                <img id="preview-img" src="{% static 'images/placeholder-avatar.png' %}" alt="Preview"
+                                    data-original="{% static 'images/placeholder-avatar.png' %}">
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if form.image.errors %}
+                        <small class="text-danger">{{ form.image.errors.as_text }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="{% url 'staff.users' %}" class="btn btn-outline-secondary btn-lg rounded-pill">
+                            <i class="fa fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-outline-primary btn-lg rounded-pill">
+                            <i class="fa fa-paper-plane"></i> <span class="ml-1">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* small enhancements – adjust to your theme */
+    .card-header h5 {
+        font-weight: 600;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border-right: 0;
+    }
+
+    .input-group .form-control {
+        border-left: 0;
+    }
+
+    .btn-lg i {
+        vertical-align: middle;
+    }
+
+    .image-box {
+        width: 150px;
+        height: 150px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f8f8;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('{{ form.image.id_for_label }}');
+        const preview = document.getElementById('preview-img');
+        if (!input || !preview) return;
+
+        // preserve original src
+        preview.dataset.original = preview.dataset.original || preview.src;
+
+        input.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) {
+                preview.src = preview.dataset.original;
+                return;
+            }
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                this.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+</script>
+
+
+{% endblock content %}
