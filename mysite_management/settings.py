@@ -29,9 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg',
-
-    'apps.apis',
+   
     'apps.dashboard',
     'apps.users',
     'apps.login',
@@ -42,9 +40,6 @@ INSTALLED_APPS = [
 
     'fronts.home',
     'fronts.contact',
-
-    'rest_framework',
-    'corsheaders',
     
 ]
 

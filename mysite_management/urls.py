@@ -6,7 +6,6 @@ from mysite_management.common_module.mainService import MainService
 
 urlpatterns = [
     path('admin1/', admin.site.urls),
-    # path('api/', include('apps.apis.urls')),
     path('admin/', include('apps.login.urls')),
     path('admin/dashboard/', include('apps.dashboard.urls')),
     path('admin/users/', include('apps.users.urls')),
