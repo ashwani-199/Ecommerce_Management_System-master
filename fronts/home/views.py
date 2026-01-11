@@ -183,7 +183,7 @@ def productDetails(request, id):
         'product_review': product_review,
         'product_rev': product_rev,
     }
-    return render(request, 'frontends/product-detail.html', context)
+    return render(request, 'frontends/product-detail1.html', context)
 
 
 

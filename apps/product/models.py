@@ -12,6 +12,21 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
+
+class Color(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Size(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -23,12 +38,23 @@ class Product(models.Model):
     categories = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+
+    # Additional info
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    dimensions = models.CharField(max_length=100)
+    materials = models.CharField(max_length=255)
+
+    # Many-to-Many relationships
+    colors = models.ManyToManyField(Color, related_name="products")
+    sizes = models.ManyToManyField(Size, related_name="products")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self): 
-        return self.name 
-    
+    def __str__(self):
+        return self.name
+
+
 
     @property 
     def discount_price(self): 
