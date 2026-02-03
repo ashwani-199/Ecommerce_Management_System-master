@@ -43,7 +43,7 @@ def add(request):
             users.image = form.cleaned_data["image"]
             users.password = make_password(form.cleaned_data["password"])
             users.confirm_password = make_password(form.cleaned_data["confirm_password"])
-            users.is_staff = True
+            users.is_staff = False
             users.save()
             messages.success(request, Messages.USER_IS_REGISTER.value)
             return redirect("staff.users")
