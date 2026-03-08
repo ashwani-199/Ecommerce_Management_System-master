@@ -127,9 +127,11 @@
                                                 <a href="{% url 'customer.edit' user.id %}"
                                                     class="btn btn-outline-primary btn-sm rounded-pill m-1"
                                                     title="Edit"><i class="fa fa-edit"></i></a>
+                                                {% if request.user.user_role_id == 1 %}
                                                 <a href="{% url 'customer.delete' user.id %}"
                                                     class="btn btn-outline-danger btn-sm rounded-pill m-1 confirmDelete"
                                                     title="Delete"><i class="fa fa-trash"></i></a>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
