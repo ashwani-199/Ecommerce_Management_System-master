@@ -1,6 +1,6 @@
 {% extends 'frontends/base.html' %}
 {% load static %}
-{% block title %}Shopping Cart{% endblock %}
+{% block title %}Order Confirmation{% endblock %}
 {% block contents %}
 <section class="bg-img1 txt-center p-lr-15 p-tb-92"
     style="background-image: url({% static 'fronts/images/bg-01.jpg' %});">
@@ -23,20 +23,57 @@
 <!-- Content page -->
 <section class="bg0 p-t-104 p-b-116">
     <div class="container">
-        <div class="flex-w flex-tr">
-            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
-                <h4 class="mtext-105 cl2 txt-center p-b-30">
-                    Your Order Confirmation Details
-                </h4>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-white bor10 p-5 shadow-sm">
+                    <div class="text-center mb-4">
+                        <h2 class="mtext-107 cl2">Thank you for your order!</h2>
+                        <p class="stext-113 cl6">Your order has been placed successfully. We&#39;ll send you an email confirmation shortly.</p>
+                    </div>
 
-                <h5 class="mtext-105 cl2 txt-center p-b-30">Order ID : #{{ order.id }}</h5>
-                <p>Status : {{ order.status }}</p>
-                <p>Total Price : Rs {{ order.total_amount }}</p>
-                <h5 class="mtext-105 cl2 txt-center p-b-30">Items :</h5>
-                {% for item in order_items %}
-                <div>{{ item.product.name }} x {{ item.quantity }} = Rs {{ item.total_price }}</div>
-                {% endfor %}
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h5 class="stext-112 cl3">Order #<span class="cl2">{{ order.id }}</span></h5>
+                            <p class="stext-114">Status: <span class="cl2">{{ order.status }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="stext-112 cl3">Total</h5>
+                            <p class="stext-114 cl2">Rs {{ order.total_amount }}</p>
+                        </div>
+                    </div>
 
+                    <div class="table-responsive mb-4">
+                        <table class="table table-borderless">
+                            <thead class="bg6">
+                                <tr>
+                                    <th class="stext-107 cl6">Item</th>
+                                    <th class="stext-107 cl6 text-center">Qty</th>
+                                    <th class="stext-107 cl6 text-right">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                <tr class="bor8">
+                                    <td class="stext-111 cl6">{{ item.product.name }}</td>
+                                    <td class="stext-111 cl6 text-center">{{ item.quantity }}</td>
+                                    <td class="stext-111 cl6 text-right">Rs {{ item.total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex-w flex-sb-m">
+                        <a href="{% url 'home.index' %}"
+                            class="flex-c-m stext-101 cl0 size-124 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                            Continue Shopping
+                        </a>
+                        <a href="{% url 'cart_detail' %}"
+                            class="flex-c-m stext-101 cl3 size-124 bg0 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                            View Cart
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

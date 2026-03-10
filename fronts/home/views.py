@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from apps.product.models import Product, ProductImage, ProductCategory, ProductReview
+from apps.product.models import Product, ProductImage, ProductCategory, ProductReview, Color, Size
 from django.http import JsonResponse
+from django.db.models import F
 from apps.product.serializers import ProductSerializers
 from apps.users.models import User
 from django.contrib.auth.hashers import make_password
@@ -225,9 +226,7 @@ def cart_detail(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
 
     cart_items = CartItem.objects.filter(cart=cart)
-
-    print(cart_items)
-
+    
     context = {
         'cart': cart,
         'cart_items': cart_items,
@@ -236,14 +235,45 @@ def cart_detail(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
+    """Add a product to the user's cart.
 
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    This view supports a POST form that can include optional size/color and quantity.
+    If accessed via GET, it redirects back to the product detail page.
+    """
 
-    if not created:  # If the item already exists in the cart, update the quantity
-        cart_item.quantity += 1
+    product = get_object_or_404(Product, id=product_id)
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+
+    if request.method != 'POST':
+        return redirect('home.product_details', product_id=product.id)
+
+    try:
+        quantity = max(1, int(request.POST.get('quantity', 1)))
+    except (TypeError, ValueError):
+        quantity = 1
+
+    size = None
+    color = None
+
+    size_id = request.POST.get('size')
+    color_id = request.POST.get('color')
+    if size_id:
+        size = get_object_or_404(Size, id=size_id)
+    if color_id:
+        color = get_object_or_404(Color, id=color_id)
+
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        product=product,
+        size=size,
+        color=color,
+        defaults={'quantity': quantity},
+    )
+
+    if not created:
+        cart_item.quantity = F('quantity') + quantity
         cart_item.save()
+        cart_item.refresh_from_db()
 
     return redirect('cart_detail')
 
@@ -274,6 +304,10 @@ def update_cart_item(request, product_id):
 @login_required
 def checkout(request):
     cart = Cart.objects.get(user=request.user)
+    if cart.get_total_price_with_sale:
+        total_price = cart.get_total_price_with_sale()
+    else:
+        total_price = cart.get_total_price()
     cart_items = CartItem.objects.filter(cart=cart)
     
     if request.method == 'POST':
@@ -283,7 +317,8 @@ def checkout(request):
             order = Order.objects.create(
                 customer=request.user,
                 shipping_address=form.cleaned_data['shipping_address'],
-                total_amount=cart.get_total_price(),  # Implement total_price method in Cart
+                
+                total_amount=total_price,  # Implement total_price method in Cart
                 status='Pending'
             )
             

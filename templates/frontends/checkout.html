@@ -23,38 +23,69 @@
 <!-- Content page -->
 <section class="bg0 p-t-104 p-b-116">
     <div class="container">
-        <div class="flex-w flex-tr">
-            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
-                <h4 class="mtext-105 cl2 txt-center p-b-30">
-                    Your Order Details
-                </h4>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                    {% if field.name == 'shipping_address' %}
-                    <div class="bor8 m-b-20 how-pos4-parent">
-                        {{field}}
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="bg-white bor10 p-5 shadow-sm">
+                    <div class="text-center mb-4">
+                        <h2 class="mtext-107 cl2">Place Your Order</h2>
+                        <p class="stext-113 cl6">Enter your shipping details and confirm your purchase.</p>
                     </div>
-                    {% if field.errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{field.errors}}</strong>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="p-3 bg6 bor8">
+                                <h4 class="stext-108 cl2 mb-3">Shipping Address</h4>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                    {% if field.name == 'shipping_address' %}
+                                    <div class="form-group mb-3">
+                                        {{ field }}
+                                        {% if field.errors %}
+                                        <div class="text-danger stext-112 mt-1">{{ field.errors|first }}</div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    <button type="submit"
+                                        class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer w-100">
+                                        Place Order
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mt-4 mt-md-0">
+                            <div class="p-3 bg6 bor8">
+                                <h4 class="stext-108 cl2 mb-3">Summary</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="stext-107 cl6">Item</th>
+                                                <th class="stext-107 cl6 text-center">Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in cart_items %}
+                                            <tr class="bor8">
+                                                <td class="stext-111 cl6">{{ item.product.name }}</td>
+                                                <td class="stext-111 cl6 text-center">{{ item.quantity }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="stext-114 cl6 mb-2">Total items: <span
+                                            class="cl2">{{ cart_items|length }}</span></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {% endif %}
-                    {% endif %}
-                    {% endfor %}
-                    <h5 class="mtext-105 cl2 txt-center p-b-30">
-                        Cart Items
-                    </h5>
-                    {% for item in cart_items %}
-                    <div class="txt-center">{{ item.product.name }} x {{ item.quantity }}</div>
-                    {% endfor %}
-                    <br>
-                    <br>
-                    <button type="submit"
-                        class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
-                        Place Order
-                    </button>
-                </form>
+
+                </div>
             </div>
         </div>
     </div>

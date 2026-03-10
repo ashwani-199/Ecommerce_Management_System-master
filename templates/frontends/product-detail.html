@@ -110,7 +110,8 @@
 
 	.img-container {
 		position: relative;
-		width: 400px;
+		width: 100%;
+		max-width: 400px;
 	}
 
 	.main-img {
@@ -159,6 +160,32 @@
 	.thumbnails img.active {
 		border-color: #000;
 	}
+
+	@media (max-width: 767px) {
+		.gallery {
+			flex-direction: column;
+		}
+
+		.img-container {
+			max-width: 100%;
+		}
+
+		.zoom-lens,
+		.zoom-result {
+			display: none !important;
+		}
+
+		.thumbnails {
+			overflow-x: auto;
+			flex-wrap: nowrap;
+			padding-bottom: 10px;
+		}
+
+		.thumbnails img {
+			width: 60px;
+			flex: 0 0 auto;
+		}
+	}
 </style>
 
 <section class="product-hero">
@@ -192,39 +219,25 @@
 		<div class="row">
 			<div class="col-md-6 col-lg-7 p-b-30">
 				<div class="p-l-25 p-r-30 p-lr-0-lg">
-					<div class="wrap-slick3 flex-sb flex-w">
-						<div class="wrap-slick3-dots"></div>
-						<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
-						<div class="slick3 gallery-lb">
+					<div class="gallery">
+						<div class="img-container" id="img-container">
+							{% if product_image %}
+							<img src="{{ product_image.0.image.url }}" alt="Product" class="main-img" id="main-img">
+							{% else %}
+							<img src="{% static 'fronts/images/no-image.png' %}" alt="No image" class="main-img" id="main-img">
+							{% endif %}
+						</div>
+						<div class="zoom-lens" id="zoom-lens"></div>
+						<div class="zoom-result" id="zoom-result">
+							{% if product_image %}
+							<img src="{{ product_image.0.image.url }}" id="zoomed-img">
+							{% endif %}
+						</div>
+						<div class="thumbnails mt-3">
 							{% for imageObj in product_image %}
-							<div class="item-slick3" data-thumb="{{imageObj.image.url}}">
-								<div class="wrap-pic-w pos-relative">
-									<img src="{{imageObj.image.url}}" alt="IMG-PRODUCT">
-
-									<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-										href="{{imageObj.image.url}}">
-										<i class="fa fa-expand"></i>
-									</a>
-								</div>
-							</div>
-							{% endfor %}
-
-							{% for imageObj in product_image %}
-							<!-- Single gallery: main image + thumbnails + zoom pane -->
-							<div class="gallery">
-								<div class="img-container" id="img-container">
-									<img src="{{imageObj.image.url}}" alt="Product" class="main-img"
-										id="main-img">
-									
-								</div>
-								<div class="zoom-lens" id="zoom-lens"></div>
-								<div class="zoom-result" id="zoom-result">
-									<img src="{{imageObj.image.url}}" id="zoomed-img">
-								</div>
-							</div>
+							<img src="{{ imageObj.image.url }}" alt="Thumbnail" class="{% if forloop.first %}active{% endif %}" onclick="changeImage(this)">
 							{% endfor %}
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -270,81 +283,76 @@
 					</div>
 					{% endif %}
 
-					<!--  -->
-					<div class="p-t-33">
-						<div class="flex-w flex-r-m p-b-10">
-							<div class="size-203 flex-c-m respon6">
-								Size
-							</div>
+                    <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                        {% if productObj.stock %}
+                        <span class="badge bg-success">In stock</span>
+                        {% else %}
+                        <span class="badge bg-danger">Out of stock</span>
+                        {% endif %}
+                        {% if productObj.is_sale %}
+                        <span class="badge bg-info text-dark">Special Price</span>
+                        {% endif %}
+                    </div>
 
-							<div class="size-204 respon6-next">
-								<div class="rs1-select2 bor8 bg0">
-									<select class="js-select2" name="time">
-										<option>Choose an option</option>
-										<option>Size S</option>
-										<option>Size M</option>
-										<option>Size L</option>
-										<option>Size XL</option>
-									</select>
-									<div class="dropDownSelect2"></div>
-								</div>
-							</div>
-						</div>
+                    <div class="p-t-33">
+                        <form method="post" action="{% url 'add_to_cart' productObj.id %}">
+                            {% csrf_token %}
 
-						<div class="flex-w flex-r-m p-b-10">
-							<div class="size-203 flex-c-m respon6">
-								Color
-							</div>
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">Size</div>
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select class="js-select2" name="size">
+                                            <option value="">Choose a size</option>
+                                            {% for size in productObj.sizes.all %}
+                                            <option value="{{ size.id }}">{{ size.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="dropDownSelect2"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-							<div class="size-204 respon6-next">
-								<div class="rs1-select2 bor8 bg0">
-									<select class="js-select2" name="time">
-										<option>Choose an option</option>
-										<option>Red</option>
-										<option>Blue</option>
-										<option>White</option>
-										<option>Grey</option>
-									</select>
-									<div class="dropDownSelect2"></div>
-								</div>
-							</div>
-						</div>
-						{% if user.is_authenticated %}
-						<div class="flex-w flex-r-m p-b-10">
-							<div class="size-204 flex-w flex-m respon6-next">
-								<!-- <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-									<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-										<i class="fs-16 zmdi zmdi-minus"></i>
-									</div>
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">Color</div>
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select class="js-select2" name="color">
+                                            <option value="">Choose a color</option>
+                                            {% for color in productObj.colors.all %}
+                                            <option value="{{ color.id }}">{{ color.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="dropDownSelect2"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-									<input class="mtext-104 cl3 txt-center num-product" type="number" id="qty-cart"
-										name="num-product" value="1">
+                            <div class="flex-w flex-r-m p-b-15">
+                                <div class="size-203 flex-c-m respon6">Quantity</div>
+                                <div class="size-204 respon6-next">
+                                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" min="1" value="1">
+                                    </div>
+                                </div>
+                            </div>
 
-									<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-										<i class="fs-16 zmdi zmdi-plus"></i>
-									</div>
-								</div> -->
-
-								<a href="{% url 'add_to_cart' productObj.id %}" value="{{productObj.id}}"
-									class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-									Add to cart
-								</a>
-
-							</div>
-						</div>
-						{% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="bor10 m-t-50 p-t-43 p-b-40">
-			<!-- Tab01 -->
-			<div class="tab01">
-				<!-- Nav tabs -->
-				<ul class="nav nav-tabs" role="tablist">
-					<li class="nav-item p-b-10">
-						<a class="nav-link active" data-toggle="tab" href="#description" role="tab">Description</a>
+                            {% if user.is_authenticated %}
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-204 flex-w flex-m respon6-next">
+                                    <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" {% if not productObj.stock %}disabled{% endif %}>
+                                        {% if productObj.stock %}Add to cart{% else %}Out of stock{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="stext-102 cl6">Please <a href="{% url 'home.login_user' %}">log in</a> to add items to your cart.</p>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 					</li>
 
 					<li class="nav-item p-b-10">
@@ -383,57 +391,47 @@
 										</span>
 
 										<span class="stext-102 cl6 size-206">
-											0.79 kg
-										</span>
-									</li>
+												{{ productObj.weight }} kg
+											</span>
+										</li>
 
-									<li class="flex-w flex-t p-b-7">
-										<span class="stext-102 cl3 size-205">
-											Dimensions
-										</span>
+										<li class="flex-w flex-t p-b-7">
+											<span class="stext-102 cl3 size-205">
+												Dimensions
+											</span>
 
-										<span class="stext-102 cl6 size-206">
-											110 x 33 x 100 cm
-										</span>
-									</li>
+											<span class="stext-102 cl6 size-206">
+												{{ productObj.dimensions }}
+											</span>
+										</li>
 
-									<li class="flex-w flex-t p-b-7">
-										<span class="stext-102 cl3 size-205">
-											Materials
-										</span>
+										<li class="flex-w flex-t p-b-7">
+											<span class="stext-102 cl3 size-205">
+												Materials
+											</span>
 
-										<span class="stext-102 cl6 size-206">
-											60% cotton
-										</span>
-									</li>
+											<span class="stext-102 cl6 size-206">
+												{{ productObj.materials }}
+											</span>
+										</li>
 
-									<li class="flex-w flex-t p-b-7">
-										<span class="stext-102 cl3 size-205">
-											Color
-										</span>
+										<li class="flex-w flex-t p-b-7">
+											<span class="stext-102 cl3 size-205">
+												Colors
+											</span>
 
-										<span class="stext-102 cl6 size-206">
-											Black, Blue, Grey, Green, Red, White
-										</span>
-									</li>
+											<span class="stext-102 cl6 size-206">
+												{% for color in productObj.colors.all %}{{ color.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+											</span>
+										</li>
 
-									<li class="flex-w flex-t p-b-7">
-										<span class="stext-102 cl3 size-205">
-											Size
-										</span>
+										<li class="flex-w flex-t p-b-7">
+											<span class="stext-102 cl3 size-205">
+												Sizes
+											</span>
 
-										<span class="stext-102 cl6 size-206">
-											XL, L, M, S
-										</span>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-					<!-- - -->
-					<div class="tab-pane fade" id="reviews" role="tabpanel">
-						<div class="row">
+											<span class="stext-102 cl6 size-206">
+												{% for size in productObj.sizes.all %}{{ size.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
 							<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
 								<div class="p-b-30 m-lr-15-sm">
 									<!-- Review -->
