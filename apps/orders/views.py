@@ -9,12 +9,12 @@ from django.contrib import messages
 SINGULAR_NAME = "Order"
 PLURAL_NAME = "Orders"
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def index(request):
-    DB = Order.objects.filter().order_by('-id')
+    DB = Order.objects.all().order_by('-id')
     
     totalRecord = DB.count()
-    paginator = Paginator(DB, 2)  
+    paginator = Paginator(DB, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -54,12 +54,36 @@ def edit(request, id):
     }
     return render(request, 'orders/edit.html', context)
 
+
+
+@login_required(login_url='login')
+def view(request, id):
+    order = Order.objects.get(id=id)
+    if not order:
+        return redirect('orders.index')
+    context = {
+        'order': order,
+        'singular_name': SINGULAR_NAME,
+        'plural_name': PLURAL_NAME,
+    }
+    return render(request, 'orders/view.html', context)
+
+
+@login_required(login_url='login')
+def delete(request, id):
+    order = Order.objects.get(id=id)
+    if not order:
+        return redirect('orders.index')
+    order.delete()
+    messages.success(request, "Order has been deleted successfully.")
+    return redirect('orders.index')
+
 @login_required(login_url='login')
 def order_item_index(request):
     DB = OrderItem.objects.filter().order_by('-id')
     
     totalRecord = DB.count()
-    paginator = Paginator(DB, 2)  
+    paginator = Paginator(DB, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

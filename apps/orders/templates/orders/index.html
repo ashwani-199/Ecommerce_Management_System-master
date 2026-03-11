@@ -10,8 +10,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-right">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Stexo</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'orders.index' %}">{{plural_name}}</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Acuity</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'customer.index' %}">{{singular_name}}</a></li>
                         <li class="breadcrumb-item active">All {{plural_name}}</li>
                     </ol>
                 </div>
@@ -22,60 +22,125 @@
             <div class="col-xl-12">
                 <div class="card m-b-30">
                     <div class="card-body">
-                        <!-- <a href="#">
-                            <h4 class="btn btn-primary mt-0 header-title mb-4">Add {{singular_name}}</h4>
-                        </a> -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <!-- <div class="d-flex align-items-center">
+                                <a href="{% url 'product.add' %}"
+                                    class="btn btn-outline-primary btn-lg rounded-pill m-2"
+                                    title="Add {{singular_name}}">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div> -->
+                            <div class="d-flex align-items-center">
+                                <div class="input-group input-group-sm">
+                                    <input id="global-search" type="text" class="form-control"
+                                        placeholder="Search username, name, email...">
+                                    <div class="input-group-append">
+                                        <button id="toggle-filters" class="btn btn-outline-secondary"
+                                            title="Show filters">
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <select id="status-filter" class="form-control form-control-sm mr-2">
+                                    <option value="">All status</option>
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+
+                                <button id="clear-all-filters" class="btn btn-sm btn-outline-secondary">Clear</button>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible per-column filters -->
+                        <div id="filter-row" class="mb-3" style="display:none;">
+                            <div class="row">
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="0" class="form-control form-control-sm col-filter"
+                                        placeholder="Customer Name">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="1" class="form-control form-control-sm col-filter"
+                                        placeholder="Amount">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="2" class="form-control form-control-sm col-filter"
+                                        placeholder="Shipping Address">
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                    <input data-col="4" class="form-control form-control-sm col-filter"
+                                        placeholder="Created Date">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover table-alternate" id="users-table">
+                                <thead class="thead-light ">
                                     <tr>
-                                        <th scope="col">Customer Name</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Shipping Address</th>
-                                        <th scope="col">Order Date</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Created Date</th>
-                                        <th scope="col">Action</th>
+                                        <th>Customer Name</th>
+                                        <th>Amount</th>
+                                        <th>Shipping Address</th>
+                                        <th>Order Date</th>
+                                        <th>Status</th>
+                                        <th>Created Date</th>
+                                        <th class="text-right">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if page_obj %}
-                                    {% for product in page_obj %}
-
+                                    {% for order in page_obj %}
                                     <tr>
-                                        <td>{{product.customer}}</td>
-                                        <td>{{product.total_amount}}</td>
-                                        <td>{{product.shipping_address}}</td>
-                                        <td>{{product.order_date | date:'d-M-Y' }}</td>
-                                        {% if product.status == 'Pending' %}
-                                        <td><span class="badge badge-info">{{product.status}}</span></td>
-                                        {% elif product.status == 'Order Confirmed' %}
-                                        <td><span class="badge badge-success">{{product.status}}</span></td>
-                                        {% else %}
-                                        <td><span class="badge badge-warning">{{product.status}}</span></td>
-                                        {% endif %}
-                                        <td>{{product.created_at | date:'d-M-Y' }}</td>
-
-                                        <td>
-                                            <span>
-                                                <a href="{% url 'orders.edit' product.id %}" class="btn btn-primary btn-sm">Edit
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                {% if order.customer.image %}
+                                                <img src="{{ order.customer.image.url }}" class="rounded-circle mr-2 avatar-sm"
+                                                    alt="">
+                                                {% else %}
+                                                <img src="{% static 'images/placeholder-avatar.png' %}"
+                                                    class="rounded-circle mr-2 avatar-sm" alt="">
+                                                {% endif %}
+                                                <div>
+                                                    <div class="font-weight-bold">{{ order.customer.first_name }} {{ order.customer.last_name }}</div>
+                                                    <small class="text-muted">{{ order.customer.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">{{ order.total_amount }}</td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ order.shipping_address }}</td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ order.order_date|date:"d-m-Y" }}</td>
+                                        <td class="align-middle">
+                                            {% if order.status == 'Pending' %}
+                                            <span class="badge badge-warning">Pending</span>
+                                            {% elif order.status == 'Order Confirmed' %}
+                                            <span class="badge badge-info">Confirmed</span>
+                                            {% elif order.status == 'Out for Delivery' %}
+                                            <span class="badge badge-primary">Out for Delivery</span>
+                                            {% elif order.status == 'Delivered' %}
+                                            <span class="badge badge-success">Delivered</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="align-middle">{{ order.created_at|date:"d-m-Y" }}</td>
+                                        <td class="align-middle text-right">
+                                            <div class="btn-group" role="group" aria-label="Actions">
+                                                <a href="{% url 'orders.view' order.id %}"
+                                                    class="btn btn-outline-primary btn-sm rounded-pill m-1"
+                                                    title="View"><i class="fa fa-eye"></i></a>
+                                                <a href="{% url 'orders.edit' order.id %}"
+                                                    class="btn btn-outline-primary btn-sm rounded-pill m-1"
+                                                    title="Edit"><i class="fa fa-edit"></i></a>
+                                                {% if request.user.user_role_id == 1 %}
+                                                <a href="{% url 'orders.delete' order.id %}"
+                                                    class="btn btn-outline-danger btn-sm rounded-pill m-1 confirmDelete"
+                                                    title="Delete"><i class="fa fa-trash"></i>
                                                 </a>
-                                            </span>
-                                            <span>
-                                                <a href="#" class="btn btn-success btn-sm">View
-                                                </a>
-                                            </span>
-                                            <span>
-                                                <a href="#" class="btn btn-danger btn-sm confirmDelete">Delete
-                                                </a>
-                                            </span>
+                                                {% endif %}
+                                            </div>
                                         </td>
                                     </tr>
-
                                     {% endfor %}
                                     {% else %}
-                                    <tr>
-                                        <td colspan="6" style="text-align:center;"> Record not found.</td>
+                                    <tr class="no-records">
+                                        <td colspan="8" class="text-center">Record not found.</td>
                                     </tr>
                                     {% endif %}
                                 </tbody>
@@ -85,7 +150,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -109,7 +173,155 @@
             });
             e.preventDefault();
         });
+        // Intercept form submits for elements with class .confirmDelete
+        $(document).on('submit', '.confirmDelete', function (e) {
+            e.preventDefault();
+            const form = this;
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This action will delete the record.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "No, cancel",
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
+</script>
+<!-- ...existing code... -->
+<style>
+    /* compact modern table */
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+    }
 
+    .table-alternate tbody tr:nth-child(odd) {
+        background: #fbfbfb;
+    }
+
+    .sticky-top thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #fff;
+    }
+
+    @media (max-width: 767px) {
+
+        /* convert rows into card-like blocks on small screens */
+        #users-table,
+        #users-table thead {
+            display: block;
+        }
+
+        #users-table tbody tr {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+            padding: 10px;
+        }
+
+        #users-table tbody td {
+            display: block;
+            width: 100%;
+        }
+
+        .text-right {
+            text-align: left !important;
+            margin-top: 8px;
+        }
+
+        .d-none.d-md-table-cell,
+        .d-none.d-lg-table-cell {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    // debounce helper
+    function debounce(fn, ms) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
+
+    (function () {
+        const table = document.getElementById('users-table');
+        const tbody = table.querySelector('tbody');
+        const rows = () => Array.from(tbody.querySelectorAll('tr')).filter(r => !r.classList.contains('no-records'));
+        const globalSearch = document.getElementById('global-search');
+        const statusFilter = document.getElementById('status-filter');
+        const colFilters = Array.from(document.querySelectorAll('.col-filter'));
+        const toggleFiltersBtn = document.getElementById('toggle-filters');
+        const filterRow = document.getElementById('filter-row');
+        const clearAllBtn = document.getElementById('clear-all-filters');
+
+        function normalize(s) { return (s || '').toString().trim().toLowerCase(); }
+
+        function applyFilters() {
+            const global = normalize(globalSearch.value);
+            const status = normalize(statusFilter.value);
+            const cols = colFilters.map(f => ({ col: parseInt(f.dataset.col, 10), val: normalize(f.value) }));
+
+            let visible = 0;
+            rows().forEach(r => {
+                const cells = r.querySelectorAll('td');
+                let ok = true;
+
+                // global search across several columns
+                if (global) {
+                    const combined = [cells[0]?.textContent, cells[1]?.textContent, cells[2]?.textContent].join(' ').toLowerCase();
+                    if (!combined.includes(global)) ok = false;
+                }
+
+                // status filter (true/false)
+                if (ok && status) {
+                    const text = normalize(cells[3]?.textContent);
+                    if (status === 'true' && !text.includes('active')) ok = false;
+                    if (status === 'false' && !text.includes('inactive')) ok = false;
+                }
+
+                // per-column filters
+                if (ok) {
+                    for (const f of cols) {
+                        if (!f.val) continue;
+                        const cell = cells[f.col];
+                        if (!cell || !normalize(cell.textContent).includes(f.val)) { ok = false; break; }
+                    }
+                }
+
+                r.style.display = ok ? '' : 'none';
+                if (ok) visible++;
+            });
+
+            const noRecord = tbody.querySelector('.no-records');
+            if (noRecord) noRecord.style.display = visible ? 'none' : '';
+        }
+
+        const debouncedApply = debounce(applyFilters, 200);
+
+        // events
+        globalSearch.addEventListener('input', debouncedApply);
+        statusFilter.addEventListener('change', debouncedApply);
+        colFilters.forEach(f => { f.addEventListener('input', debouncedApply); });
+
+        toggleFiltersBtn.addEventListener('click', () => { filterRow.style.display = filterRow.style.display === 'none' ? '' : 'none'; });
+
+        clearAllBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            globalSearch.value = '';
+            statusFilter.selectedIndex = 0;
+            colFilters.forEach(f => f.value = '');
+            applyFilters();
+        });
+
+        // initial apply to ensure correct no-records visibility
+        applyFilters();
+    })();
 </script>
 {% endblock content %}

@@ -38,7 +38,7 @@
                                 <form method="post">
                                     {% csrf_token %}
                                     {% for field in form %}
-                                    {% if field.name == 'shipping_address' %}
+                                    {% if field.name == 'shipping_address' or field.name == 'payment_method' %}
                                     <div class="form-group mb-3">
                                         {{ field }}
                                         {% if field.errors %}
@@ -80,6 +80,7 @@
                                 <div class="mt-4">
                                     <p class="stext-114 cl6 mb-2">Total items: <span
                                             class="cl2">{{ cart_items|length }}</span></p>
+                                    <p class="stext-114 cl6 mb-2">Total amount: <span class="cl2">{{ total_price }}</span></p>
                                 </div>
                             </div>
                         </div>

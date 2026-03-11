@@ -1,0 +1,114 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">View {{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Acuity</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'orders.index' %}">{{singular_name}}
+                                Managements</a>
+                        </li>
+                        <li class="breadcrumb-item active">View {{singular_name}}</li>
+                    </ol>
+                </div>
+            </div> <!-- end row -->
+        </div>
+        <!-- end page-title -->
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="tab-pane active" id="kt_apps_contacts_view_tab_1" role="tabpanel">
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Customer Name :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{ order.customer.first_name}} {{ order.customer.last_name }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Amount :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.total_amount}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Email :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.customer.email}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Shipping Address :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.shipping_address}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Order Date :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.order_date}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Status :</label>
+                                {% if order.status == 'Pending' %}
+                                <div class="col-8">
+                                    <span class="badge badge-warning font-weight-bolder">Pending</span>
+                                </div>
+                                {% elif order.status == 'Order Confirmed' %}
+                                <div class="col-8">
+                                    <span class="badge-info font-weight-bolder">Confirmed</span>
+                                </div>
+                                {% elif order.status == 'Out for Delivery' %}
+                                <div class="col-8">
+                                    <span class="badge badge-primary font-weight-bolder">Out for Delivery</span>
+                                </div>
+                                {% elif order.status == 'Delivered' %}
+                                <div class="col-8">
+                                    <span class="badge badge-success font-weight-bolder">Delivered</span>
+                                </div>
+                                {% elif order.status == 'Cancelled' %}
+                                <div class="col-8">
+                                    <span class="badge badge-danger font-weight-bolder">Cancelled</span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Created Date :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.created_at | date:'d-M-Y'}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+    </div>
+    <!-- container-fluid -->
+
+</div>
+{% endblock content %}

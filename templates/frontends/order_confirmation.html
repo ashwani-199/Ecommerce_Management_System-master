@@ -35,6 +35,10 @@
                         <div class="col-md-6 mb-3 mb-md-0">
                             <h5 class="stext-112 cl3">Order #<span class="cl2">{{ order.id }}</span></h5>
                             <p class="stext-114">Status: <span class="cl2">{{ order.status }}</span></p>
+                            {% if payment %}
+                            <p class="stext-114">Payment Method: <span class="cl2">{{ payment.payment_method }}</span></p>
+                            <p class="stext-114">Payment Status: <span class="cl2">{{ payment.status }}</span></p>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <h5 class="stext-112 cl3">Total</h5>

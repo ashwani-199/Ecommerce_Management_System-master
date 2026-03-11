@@ -2,6 +2,7 @@ from django import forms
 from apps.users.models import User
 from django.core.exceptions import ValidationError
 from django.forms.widgets import Select
+from apps.payment.models import STATUS as PAYMENT_METHOD_CHOICES
 
 GENDER_CHOICES = (
     ("", "Select"),
@@ -307,9 +308,26 @@ class CheckoutForm(forms.Form):
         }
     )
 
+    payment_method = forms.ChoiceField(
+        required=False,
+        label='Payment Method',
+        choices=PAYMENT_METHOD_CHOICES,
+        widget=forms.Select(attrs={'class': "stext-111 cl2 plh3 size-116 p-l-62 p-r-30"}),
+        error_messages={
+            'required': "The payment method field is required"
+        }
+    )
+
     def clean_shipping_address(self):
         data = self.cleaned_data
         shipping_address = data.get('shipping_address')
         if shipping_address == "" or shipping_address is None:
             raise ValidationError(self.fields['shipping_address'].error_messages['required'])
         return shipping_address
+
+    def clean_payment_method(self):
+        data = self.cleaned_data
+        payment_method = data.get('payment_method')
+        if payment_method == "" or payment_method is None:
+            raise ValidationError(self.fields['payment_method'].error_messages['required'])
+        return payment_method

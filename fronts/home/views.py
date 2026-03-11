@@ -4,8 +4,10 @@ from django.contrib import messages
 from apps.product.models import Product, ProductImage, ProductCategory, ProductReview, Color, Size
 from django.http import JsonResponse
 from django.db.models import F
+from django.utils import timezone
 from apps.product.serializers import ProductSerializers
 from apps.users.models import User
+from apps.payment.models import Payment
 from django.contrib.auth.hashers import make_password
 from fronts.home.models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
@@ -244,9 +246,6 @@ def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
-    if request.method != 'POST':
-        return redirect('home.product_details', product_id=product.id)
-
     try:
         quantity = max(1, int(request.POST.get('quantity', 1)))
     except (TypeError, ValueError):
@@ -304,10 +303,10 @@ def update_cart_item(request, product_id):
 @login_required
 def checkout(request):
     cart = Cart.objects.get(user=request.user)
-    if cart.get_total_price_with_sale:
-        total_price = cart.get_total_price_with_sale()
-    else:
-        total_price = cart.get_total_price()
+
+    # Use the sale-aware total if the cart has any sale-priced items.
+    total_price = cart.get_total_price_with_sale()
+
     cart_items = CartItem.objects.filter(cart=cart)
     
     if request.method == 'POST':
@@ -317,20 +316,33 @@ def checkout(request):
             order = Order.objects.create(
                 customer=request.user,
                 shipping_address=form.cleaned_data['shipping_address'],
-                
-                total_amount=total_price,  # Implement total_price method in Cart
+                total_amount=total_price,
                 status='Pending'
             )
             
-            # Create OrderItems from CartItems
+            # Create OrderItems from CartItems (respect sale price)
             for item in cart_items:
+                unit_price = item.product.sale_price if item.product.is_sale else item.product.price
                 OrderItem.objects.create(
                     order=order,
                     product=item.product,
                     quantity=item.quantity,
-                    total_price=item.product.price
+                    price=unit_price,
+                    total_price=item.get_total_price_with_sale()
                 )
             
+            # Create a payment record
+            payment_method = form.cleaned_data.get('payment_method')
+            payment_status = 'Completed' if payment_method == 'Online' else 'Pending'
+            Payment.objects.create(
+                order=order,
+                customer=request.user,
+                amount=total_price,
+                payment_date=timezone.localdate(),
+                payment_method=payment_method,
+                status=payment_status,
+            )
+
             # Clear the cart
             cart_items.delete()
             return redirect('order_confirmation', order_id=order.id)
@@ -341,9 +353,14 @@ def checkout(request):
     else:
         form = CheckoutForm()
     
-    return render(request, 'frontends/checkout.html', {'form': form, 'cart_items': cart_items})
+    return render(request, 'frontends/checkout.html', {'form': form, 'cart_items': cart_items, 'total_price': total_price})
 
 def order_confirmation(request, order_id):
     order = Order.objects.get(id=order_id)
     order_items = OrderItem.objects.filter(order=order)
-    return render(request, 'frontends/order_confirmation.html', {'order': order, 'order_items': order_items})
+    payment = Payment.objects.filter(order=order).first()
+    return render(request, 'frontends/order_confirmation.html', {
+        'order': order,
+        'order_items': order_items,
+        'payment': payment,
+    })

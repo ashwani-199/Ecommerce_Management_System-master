@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from apps.users.models import User
 from apps.product.models import Product
+from apps.orders.models import Order
 from django.core.paginator import Paginator
 
 # Create your views here.
@@ -10,6 +11,7 @@ def index(request):
     staff = User.objects.filter(user_role_id=2, is_active=True).count()
     customers = User.objects.filter(user_role_id=3, is_active=True).count()
     product = Product.objects.filter().count()
+    orders = Order.objects.filter().count()
 
     totalRecord = users_obj.count()
     paginator = Paginator(users_obj, 4)  
@@ -21,6 +23,7 @@ def index(request):
         'merchants': staff,
         'customers':customers,
         'vendors': product,
+        'orders': orders,
         'users_obj':users_obj,
         'totalRecord': totalRecord,
     }

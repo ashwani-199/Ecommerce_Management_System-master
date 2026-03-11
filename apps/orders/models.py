@@ -33,6 +33,9 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"Total amount#{self.total_price} for order #{self.id}"
+    
+    
+    
 
 class OrderHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
