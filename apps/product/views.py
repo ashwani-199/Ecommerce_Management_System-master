@@ -42,7 +42,7 @@ def addProduct(request):
             post_form.save()
 
             for form in formset.cleaned_data:
-                print(form, "FORDM")
+                
                 if form:
                     image = form['image']
                     photo = ProductImage(product=post_form, image=image)

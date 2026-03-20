@@ -78,6 +78,8 @@ def delete(request, id):
     messages.success(request, "Order has been deleted successfully.")
     return redirect('orders.index')
 
+
+
 @login_required(login_url='login')
 def order_item_index(request):
     DB = OrderItem.objects.filter().order_by('-id')
@@ -95,3 +97,26 @@ def order_item_index(request):
         'plural_name': "Order Items",
     }
     return render(request, 'orderItem/index.html', context)
+
+@login_required(login_url='login')
+def order_item_view(request, id):
+    order = OrderItem.objects.get(id=id)
+    if not order:
+        return redirect('orders.index')
+    context = {
+        'order': order,
+        'singular_name': SINGULAR_NAME,
+        'plural_name': PLURAL_NAME,
+    }
+    return render(request, 'orderItem/view.html', context)
+
+
+
+@login_required(login_url='login')
+def orderItem_delete(request, id):
+    order = OrderItem.objects.get(id=id)
+    if not order:
+        return redirect('order_item.index')
+    order.delete()
+    messages.success(request, "Order has been deleted successfully.")
+    return redirect('order_item.index')

@@ -32,7 +32,7 @@ class OrderItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Total amount#{self.total_price} for order #{self.id}"
+        return f"Total amount Rs{self.total_price} for order Rs{self.id}"
     
     
     

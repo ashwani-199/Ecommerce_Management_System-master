@@ -1,0 +1,83 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">View {{singular_name}}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Acuity</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'order_item.index' %}">{{singular_name}}
+                                Managements</a>
+                        </li>
+                        <li class="breadcrumb-item active">View {{singular_name}}</li>
+                    </ol>
+                </div>
+            </div> <!-- end row -->
+        </div>
+        <!-- end page-title -->
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="tab-pane active" id="kt_apps_contacts_view_tab_1" role="tabpanel">
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Order :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{ order.order}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Product :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.product}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Quantity :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.quantity}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Total Price :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.total_price}}
+                                    </span>
+                                </div>
+                            </div>
+                            
+
+                            <div class="form-group row my-2">
+                                <label class="col-4 col-form-label">Created Date :</label>
+                                <div class="col-8">
+                                    <span class="form-control-plaintext font-weight-bolder">
+                                        {{order.created_at | date:'d-M-Y'}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+    </div>
+    <!-- container-fluid -->
+
+</div>
+{% endblock content %}

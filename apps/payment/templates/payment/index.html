@@ -11,7 +11,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-right">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Acuity</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'customer.index' %}">{{singular_name}}</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'payment.list' %}">{{singular_name}}</a></li>
                         <li class="breadcrumb-item active">All {{plural_name}}</li>
                     </ol>
                 </div>
@@ -64,10 +64,10 @@
                                 </div>
                                 <div class="col-sm-3 mb-2">
                                     <input data-col="2" class="form-control form-control-sm col-filter"
-                                        placeholder="Shipping Address">
+                                        placeholder="Payment Method">
                                 </div>
                                 <div class="col-sm-3 mb-2">
-                                    <input data-col="4" class="form-control form-control-sm col-filter"
+                                    <input data-col="3" class="form-control form-control-sm col-filter"
                                         placeholder="Created Date">
                                 </div>
                             </div>
@@ -77,10 +77,11 @@
                             <table class="table table-hover table-alternate" id="users-table">
                                 <thead class="thead-light ">
                                     <tr>
-                                        <th>Order</th>
-                                        <th>Product</th>
-                                        <th>Quantity</th>
-                                        <th>Total Price</th>
+                                        <th>Customer</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Payment Date</th>
+                                        <th>Status</th>
                                         <th>Created Date</th>
                                         <th class="text-right">Action</th>
                                     </tr>
@@ -89,20 +90,44 @@
                                     {% if page_obj %}
                                     {% for order in page_obj %}
                                     <tr>
-                                        <td class="align-middle">{{ order.order }}</td>
-                                        <td class="align-middle">{{ order.product }}</td>
-                                        <td class="align-middle d-none d-md-table-cell">{{ order.quantity }}</td>
-                                        <td class="align-middle d-none d-md-table-cell">{{ order.total_price }}</td>
-                                        
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                {% if order.customer.image %}
+                                                <img src="{{ order.customer.image.url }}" class="rounded-circle mr-2 avatar-sm"
+                                                    alt="">
+                                                {% else %}
+                                                <img src="{% static 'images/placeholder-avatar.png' %}"
+                                                    class="rounded-circle mr-2 avatar-sm" alt="">
+                                                {% endif %}
+                                                <div>
+                                                    <div class="font-weight-bold">{{ order.customer.first_name }} {{ order.customer.last_name }}</div>
+                                                    <small class="text-muted">{{ order.customer.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">{{ order.amount }}</td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ order.payment_method }}</td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ order.payment_date|date:"d-m-Y" }}</td>
+                                        <td class="align-middle">
+                                            {% if order.status == 'Pending' %}
+                                            <span class="badge badge-warning">Pending</span>
+                                            {% elif order.status == 'Completed' %}
+                                            <span class="badge badge-info">Completed</span>
+                                            {% elif order.status == 'Online' %}
+                                            <span class="badge badge-primary">Online</span>
+                                            {% endif %}
+                                        </td>
                                         <td class="align-middle">{{ order.created_at|date:"d-m-Y" }}</td>
                                         <td class="align-middle text-right">
                                             <div class="btn-group" role="group" aria-label="Actions">
-                                                <a href="{% url 'order_item.view' order.id %}"
+                                                <a href="{% url 'orders.view' order.id %}"
                                                     class="btn btn-outline-primary btn-sm rounded-pill m-1"
                                                     title="View"><i class="fa fa-eye"></i></a>
-
+                                                <!-- <a href="{% url 'orders.edit' order.id %}"
+                                                    class="btn btn-outline-primary btn-sm rounded-pill m-1"
+                                                    title="Edit"><i class="fa fa-edit"></i></a> -->
                                                 {% if request.user.user_role_id == 1 %}
-                                                <a href="{% url 'order_item.delete' order.id %}"
+                                                <a href="{% url 'orders.delete' order.id %}"
                                                     class="btn btn-outline-danger btn-sm rounded-pill m-1 confirmDelete"
                                                     title="Delete"><i class="fa fa-trash"></i>
                                                 </a>
